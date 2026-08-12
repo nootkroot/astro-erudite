@@ -5,10 +5,21 @@ import { isSubpost } from "@/lib/utils"
 export const pageTitle = (title: string) => `${title} | ${SITE.title}`
 
 export async function getPosts(): Promise<CollectionEntry<"blog">[]> {
-  const posts = await getCollection("blog", ({ data }) => !data.draft)
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft && !data.hidden,
+  )
   return posts
     .filter((post) => !isSubpost(post.id))
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+}
+
+export async function getHiddenPosts(): Promise<CollectionEntry<"blog">[]> {
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft && !!data.hidden,
+  )
+  return posts.filter((post) => !isSubpost(post.id))
 }
 
 export async function getSubposts(): Promise<

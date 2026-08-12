@@ -6,9 +6,10 @@ import { pageTitle } from "@/lib/content"
 type Props = {
   post: CollectionEntry<"blog">
   canonical?: string
+  noindex?: boolean
 }
 
-const { post, canonical: canonicalPath } = Astro.props
+const { post, canonical: canonicalPath, noindex } = Astro.props
 const { title, description, date, image } = post.data
 
 const base = Astro.site ?? new URL(Astro.url.origin)
@@ -24,6 +25,7 @@ const ogImage = image
 <title>{pageTitle(title)}</title>
 <meta name="description" content={description}>
 <link rel="canonical" href={canonical}>
+{noindex && <meta name="robots" content="noindex, nofollow">}
 
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
