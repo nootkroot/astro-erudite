@@ -193,6 +193,7 @@ The blog post schema is defined as follows:
 | `authors`     | `reference("authors")[]` | Each entry must match the id of a file in `src/content/authors/` (e.g. if their file is named `jane-doe.md`, use `jane-doe` in the array). Validated at build time.           | Yes      |
 | `image`       | `image()`                | Should be exactly 1200px &times; 630px.                                                                                                                                       | Optional |
 | `draft`       | `boolean`                | Defaults to `false` if not provided. You can also prefix a filename with `_` to hide it from the content loader entirely.                                                     | Optional |
+| `hidden`      | `boolean`                | Defaults to `false` if not provided. Hidden posts are still built and reachable via their direct link, but are excluded from listings, tags, RSS, the sitemap, and search engine indexing (`noindex`). | Optional |
 
 ### Subposts
 

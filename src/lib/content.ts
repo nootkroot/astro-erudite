@@ -4,8 +4,13 @@ import { isSubpost } from "@/lib/utils"
 
 export const pageTitle = (title: string) => `${title} | ${SITE.title}`
 
-export async function getPosts(): Promise<CollectionEntry<"blog">[]> {
-  const posts = await getCollection("blog", ({ data }) => !data.draft)
+export async function getPosts(
+  includeHidden = false,
+): Promise<CollectionEntry<"blog">[]> {
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft && (includeHidden || !data.hidden),
+  )
   return posts
     .filter((post) => !isSubpost(post.id))
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())

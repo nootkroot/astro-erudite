@@ -11,13 +11,20 @@ import { Image } from "astro:assets"
 import { getEntries, render, type CollectionEntry } from "astro:content"
 
 export async function getStaticPaths() {
-  const posts = await getPosts()
+  const posts = await getPosts(true)
+  const listed = posts.filter((post) => !post.data.hidden)
   const series = await getSubposts()
-  return posts.flatMap((parent, i) => {
+  return posts.flatMap((parent) => {
+    const i = listed.indexOf(parent)
     const chain = [parent, ...(series.get(parent.id) ?? [])]
     return chain.map((post) => ({
       params: { id: post.id },
-      props: { post, chain, prev: posts[i + 1], next: posts[i - 1] },
+      props: {
+        post,
+        chain,
+        prev: i === -1 ? undefined : listed[i + 1],
+        next: i === -1 ? undefined : listed[i - 1],
+      },
     }))
   })
 }
@@ -61,6 +68,7 @@ if (isSubpost(post.id)) {
     slot="head"
     post={post}
     canonical={isSubpost(post.id) ? `/blog/${parent.id}` : undefined}
+    noindex={parent.data.hidden}
   />
   {hasToc && (
       <TableOfContents
